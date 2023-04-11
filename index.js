@@ -1,15 +1,15 @@
 console.log('开始绘制地图……')
 var map = new BMapGL.Map("container");          // 创建地图实例 
 //var point = new BMapGL.Point(116.20596467080586, 40.0144555532275);  // 创建点坐标 
-var point = new BMapGL.Point(116.404, 39.915);
+var point = new BMapGL.Point(102.74160169891385,26.556603494854336);
 
-map.centerAndZoom(point, 10.5);                 // 初始化地图，设置中心点坐标和地图级别
+map.centerAndZoom(point, 11.5);                 // 初始化地图，设置中心点坐标和地图级别
 map.enableScrollWheelZoom();
 map.setHeading(0);
 map.setTilt(10);
 
 var bdary = new BMapGL.Boundary();
-bdary.get('北京市', function (rs) {
+bdary.get('会东县', function (rs) {
     // 绘制行政区
     for (var i = 0; i < rs.boundaries.length; i++) {
         var path = [];
@@ -20,6 +20,8 @@ bdary.get('北京市', function (rs) {
             var pt = new BMapGL.Point(tmp[0], tmp[1]);
             ptArr.push(pt);
         }
+        console.log('xyArr>> ', i, xyArr)
+        console.log('ptArr>> ', i, ptArr)
         var mapmask = new BMapGL.MapMask(ptArr, {
             isBuildingMask: true,
             isPoiMask: true,
@@ -37,18 +39,33 @@ bdary.get('北京市', function (rs) {
             strokeOpacity: 1
         });
         map.addOverlay(border);
+
+        // var prism = new BMapGL.Prism(ptArr, 5000, {
+        //     topFillColor: '#5679ea',
+        //     topFillOpacity: 0.5,
+        //     sideFillColor: '#5679ea',
+        //     sideFillOpacity: 0.9
+
+        // });
+        // map.addOverlay(prism);
     }
 });
 
 // 路线规划
 var p1 = new BMapGL.Point(116.301934, 39.977552);
-var p2 = new BMapGL.Point(116.69266956694047,39.92516048191106);
+var p2 = new BMapGL.Point(102.96246176383126,26.52180780525433);
 
 var driving = new BMapGL.DrivingRoute(map, { renderOptions: { map: map, autoViewport: false } });
 driving.search(point, p2);
 
+var walking = new BMapGL.WalkingRoute(map, { renderOptions: { map: map, autoViewport: false } });
+walking.search(point, p2);
+
+var riding = new BMapGL.RidingRoute(map, { renderOptions: { map: map, autoViewport: false } });
+riding.search(point, p2);
+
 // 绘制圆
-var circle1 = new BMapGL.Circle(point, 10000, {
+var circle1 = new BMapGL.Circle(point, 5000, {
     strokeColor: 'red',
     strokeWeight: 1,
     strokeOpacity: 0.5,
@@ -56,7 +73,7 @@ var circle1 = new BMapGL.Circle(point, 10000, {
     fillOpacity: 0.3
 });
 
-var circle2 = new BMapGL.Circle(point, 12000, {
+var circle2 = new BMapGL.Circle(point, 10000, {
     strokeColor: 'yellow',
     strokeWeight: 1,
     strokeOpacity: 0.5,
@@ -93,5 +110,10 @@ marker.addEventListener('click', function () {
     map.openInfoWindow(infoWindow, point); // 开启信息窗口
     map.setHeading(0);
     map.setTilt(50);
+    // map.clearOverlays();
 });
-// map.openInfoWindow(infoWindow, point); // 开启信息窗口
+
+// map 点击事件
+map.addEventListener('click', function (e) {
+    alert('点击位置经纬度：' + e.latlng.lng + ',' + e.latlng.lat);
+});
