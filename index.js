@@ -1,12 +1,16 @@
 console.log('开始绘制地图……')
-var map = new BMapGL.Map("container");          // 创建地图实例 
-//var point = new BMapGL.Point(116.20596467080586, 40.0144555532275);  // 创建点坐标 
+var map = new BMapGL.Map("container"); 
 var point = new BMapGL.Point(102.74160169891385,26.556603494854336);
 
-map.centerAndZoom(point, 11.5);                 // 初始化地图，设置中心点坐标和地图级别
+// 初始化地图，设置中心点坐标和地图级别
+map.centerAndZoom(point, 11.8);
 map.enableScrollWheelZoom();
-map.setHeading(0);
-map.setTilt(10);
+// map.setHeading(0);
+// map.setTilt(10);
+
+map.setMapStyleV2({     
+    styleId: 'bcea1093a77238bc5628ea6d764d42d6'
+});
 
 var bdary = new BMapGL.Boundary();
 bdary.get('会东县', function (rs) {
@@ -58,11 +62,11 @@ var p2 = new BMapGL.Point(102.96246176383126,26.52180780525433);
 var driving = new BMapGL.DrivingRoute(map, { renderOptions: { map: map, autoViewport: false } });
 driving.search(point, p2);
 
-var walking = new BMapGL.WalkingRoute(map, { renderOptions: { map: map, autoViewport: false } });
-walking.search(point, p2);
+// var walking = new BMapGL.WalkingRoute(map, { renderOptions: { map: map, autoViewport: false } });
+// walking.search(point, p2);
 
-var riding = new BMapGL.RidingRoute(map, { renderOptions: { map: map, autoViewport: false } });
-riding.search(point, p2);
+// var riding = new BMapGL.RidingRoute(map, { renderOptions: { map: map, autoViewport: false } });
+// riding.search(point, p2);
 
 // 绘制圆
 var circle1 = new BMapGL.Circle(point, 5000, {
@@ -105,11 +109,14 @@ var opts = {
 var infoWindow = new BMapGL.InfoWindow(
     '发震时刻：2023-03-23 18:26:34<br/>纬度：22.61°<br/>经度：100.71°<br/>深度：10千米<br/>震级：4.2<br/>参考位置：四川凉山州会东县',
     opts);
+setTimeout(() => {
+    map.openInfoWindow(infoWindow, point)
+}, 2000)
 // 点标记添加点击事件
 marker.addEventListener('click', function () {
-    map.openInfoWindow(infoWindow, point); // 开启信息窗口
-    map.setHeading(0);
-    map.setTilt(50);
+    map.openInfoWindow(infoWindow, point)
+    // map.setHeading(0);
+    // map.setTilt(50);
     // map.clearOverlays();
 });
 
